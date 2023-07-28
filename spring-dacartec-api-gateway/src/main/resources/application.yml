@@ -1,0 +1,115 @@
+---
+spring:
+  webflux:
+    base-path: /api-gateway
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  application:
+    name: api-gateway
+  cloud:
+    config:
+      import-check:
+        enabled: false
+    discovery:
+      enabled: true
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes:
+        - id: vets-service
+          uri: lb://vets-service
+          predicates:
+            - Path=/vets-service/**, /api-gateway/vets-service/**
+          filters:
+#            - ContextPathRewritePath=/api-gateway/vets-service/(?<path>.*), /$\{path}
+            - RewritePath=/api-gateway/vets-service/(?<path>.*), /vets-service/$\{path}
+        - id: openapi-proxy
+          uri: https://demos1.springdoc.org
+          predicates:
+            - Path=/api-gateway/v3/api-docs/**
+          filters:
+            - RewritePath=/api-gateway/v3/api-docs/(?<path>.*), /api-gateway/$\{path}/v3/api-docs
+        - id: openapi
+          uri: http://localhost:${server.port}
+          predicates:
+            - Path=/v3/api-docs/**
+          filters:
+            - RewritePath=/v3/api-docs/(?<path>.*), /$\{path}/v3/api-docs
+---
+my-app-gateway: /api-gateway
+---
+server:
+  servlet:
+    context-path: /api-gateway
+  port: 8081
+  compression:
+    enabled: true
+    mime-types: application/json,text/css,application/javascript
+    min-response-size: 2048
+  headerhttp2:
+    maxDynamicTableSize: 20KB
+  undertow:
+    max-headers: 8192
+  tomcat:
+    threads:
+      max: 200
+    max-swallow-size: 2MB
+    max-http-form-post-size: 2MB
+    connection-timeout: 5s
+  max-http-header-size: 8KB
+  forward-headers-strategy: framework
+---
+--- 
+management:
+  endpoint:
+    health:
+      exposure:
+        include: reactive
+  endpoints:
+    web:
+      exposure:
+        include: acmehealth
+      path-mapping:
+        health: internal/health
+        acmehealth: /health
+---
+spring.messages.basename: messages/messages
+---
+spring:
+  zipkin:
+    baseUrl: http://tracing-server:9411
+eureka:
+  client:
+    registration:
+      prefer-ip-address: true
+    fetchRegistry: true
+    registerWithEureka: true
+    serviceUrl:
+      defaultZone: http://192.168.195.208:8080/discovery-server/eureka/
+  instance:
+      preferIpAddress: true
+---
+springdoc:
+  version: '@springdoc.version@'
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    use-root-path: true
+    configUrl: /api-gateway/api/gateway/swagger-config.json
+#    path: /api-gateway/v3/api-docs
+#    url: /api-gateway/swagger-ui.html
+#    urls:
+#      - name: api-gateway
+#        url: /v3/api-docs
+#      - name: vets-service
+#        url: /v3/api-docs
+  cache:
+    disabled: true
+---
+spring:
+  main:
+    banner-mode: off

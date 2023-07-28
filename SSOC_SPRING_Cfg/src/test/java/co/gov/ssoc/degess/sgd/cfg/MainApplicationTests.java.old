@@ -1,0 +1,119 @@
+package org.springframework.samples.petclinic.visits.web;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.test.web.servlet.MvcResult;
+
+import co.gov.ssoc.gedess.sgd.cfg.jwt.dto.JwtResponse;
+import co.gov.ssoc.gedess.sgd.cfg.jwt.dto.LoginJWTRequestDTO;
+import co.gov.ssoc.gedess.sgd.cfg.persistence.VerificadorConstantesCdenciaRunner;
+import co.gov.ssoc.gedess.sgd.model.entity.EJwtRole;
+import co.gov.ssoc.gedess.sgd.model.entity.JwtRole;
+import co.gov.ssoc.gedess.sgd.model.entity.JwtUser;
+
+class MainApplicationTests extends AbstractTest {
+
+	@Autowired
+	private VerificadorConstantesCdenciaRunner constantsVerifier;
+
+//	private static final String JDBC_SQLSERVER_LOCALHOST_1433_DATABASE_NAME_TEST_ENCRYPT_TRUE_TRUST_SERVER_CERTIFICATE_TRUE = "jdbc:sqlserver://host.docker.internal:1433;encrypt=true;trustServerCertificate=true;";
+//	private static final String JDBC_SQLSERVER_LOCALHOST_1433_DATABASE_NAME_SGDTEST_ENCRYPT_TRUE_TRUST_SERVER_CERTIFICATE_TRUE = "jdbc:sqlserver://host.docker.internal:1433;databaseName=SGDTEST;encrypt=true;trustServerCertificate=true;";
+	private static final String JDBC_SQLSERVER_LOCALHOST_1433_DATABASE_NAME_TEST_ENCRYPT_TRUE_TRUST_SERVER_CERTIFICATE_TRUE = "jdbc:sqlserver://localhost:1433;encrypt=true;trustServerCertificate=true;";
+	private static final String JDBC_SQLSERVER_LOCALHOST_1433_DATABASE_NAME_SGDTEST_ENCRYPT_TRUE_TRUST_SERVER_CERTIFICATE_TRUE = "jdbc:sqlserver://localhost:1433;databaseName=SGDTESTCDENCIA;encrypt=true;trustServerCertificate=true;";
+
+	private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTest.class);
+
+	static boolean crear = false;
+	static boolean eliminar = false;
+
+	@BeforeAll
+	public static void initTest() throws SQLException {
+//		H2 embbeded
+//		Server.createWebServer("-web", "-webAllowOthers", "-webPort", "0").start();
+//
+		LOGGER.info(" <----------------> Before All <-----------------> ");
+		if (eliminar) {
+			eliminar = false;
+			try (Connection connection = DriverManager.getConnection(
+					JDBC_SQLSERVER_LOCALHOST_1433_DATABASE_NAME_TEST_ENCRYPT_TRUE_TRUST_SERVER_CERTIFICATE_TRUE, "sa",
+					"K22m22Da&"); Statement statement = connection.createStatement()) {
+				statement.execute("DECLARE @DatabaseName NVARCHAR(128)\r\n" + "SET @DatabaseName = 'SGDTESTCDENCIA'\r\n"
+						+ "\r\n" + "DECLARE @SQL NVARCHAR(MAX) = ''\r\n" + "\r\n"
+						+ "SELECT @SQL += 'KILL ' + CAST(spid AS NVARCHAR) + ';'\r\n" + "FROM sys.sysprocesses\r\n"
+						+ "WHERE DB_NAME(dbid) = @DatabaseName\r\n" + "\r\n" + "EXEC(@SQL)");
+				connection.close();
+			} catch (Exception e) {
+				LOGGER.error("drop test db", e);
+			}
+		}
+		if (crear) {
+			try (Connection connection = DriverManager.getConnection(
+					JDBC_SQLSERVER_LOCALHOST_1433_DATABASE_NAME_TEST_ENCRYPT_TRUE_TRUST_SERVER_CERTIFICATE_TRUE, "sa",
+					"K22m22Da&"); Statement statement = connection.createStatement()) {
+				statement.execute(
+						"IF EXISTS (SELECT 1 FROM sys.databases WHERE name = 'SGDTESTCDENCIA') DROP DATABASE SGDTESTCDENCIA");
+				statement.execute("CREATE DATABASE SGDTESTCDENCIA");
+				connection.close();
+			} catch (Exception e) {
+				LOGGER.error("drop test db", e);
+			}
+		}
+		try (Connection connection = DriverManager.getConnection(
+				JDBC_SQLSERVER_LOCALHOST_1433_DATABASE_NAME_SGDTEST_ENCRYPT_TRUE_TRUST_SERVER_CERTIFICATE_TRUE, "sa",
+				"K22m22Da&"); Statement statement = connection.createStatement()) {
+			statement.execute(
+					"IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'Administracion') BEGIN EXEC('CREATE SCHEMA Administracion') END");
+			statement.execute(
+					"IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'AdministracionAudit') BEGIN EXEC('CREATE SCHEMA AdministracionAudit') END");
+			statement.execute(
+					"IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'correspondencia') BEGIN EXEC('CREATE SCHEMA correspondencia') END");
+			statement.execute(
+					"IF NOT EXISTS (SELECT 1 FROM sys.schemas WHERE name = 'OPE') BEGIN EXEC('CREATE SCHEMA OPE') END");
+		} catch (Exception e) {
+			LOGGER.error("drop test db", e);
+		}
+	}
+
+	@Test
+	void contextLoads() throws Exception {
+//		assertNotNull(constantsVerifier);
+		constantsVerifier.run(null);
+	}
+
+	@Test
+	@Order(0)
+	void ATestJWT() throws Exception {
+		Set<JwtRole> roles = new HashSet<>();
+		for (EJwtRole role : EJwtRole.values()) {
+			roles.add(JwtRole.builder().name(role).build());
+		}
+		jwtRoleRepository.saveAllAndFlush(roles);
+		jwtUserRepository.saveAndFlush(JwtUser.builder().password(password).username(userName).platform("JUNIT")
+				.state(true).roles(roles).build());
+		String uri = "/auth/api/v1/signin";
+		LoginJWTRequestDTO rqtJwt = new LoginJWTRequestDTO();
+		rqtJwt.setPassword(password);
+		rqtJwt.setUsername(userName);
+		MvcResult mvcResult = postWithoutJwt(uri, mapToJson(rqtJwt));
+		int status = mvcResult.getResponse().getStatus();
+		assertEquals(200, status);
+		String content = mvcResult.getResponse().getContentAsString();
+		responseJwt = mapFromJson(content, JwtResponse.class);
+		assertNotNull(responseJwt.getToken(), responseJwt.getExpirationDate());
+	}
+
+}

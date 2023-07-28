@@ -1,0 +1,35 @@
+spring:
+  application:
+    name: discovery-server
+  cloud:
+    config:
+      import-check:
+        enabled: false
+# Avoid some debugging logs at startup
+logging:
+  level:
+    org:
+      springframework:
+        boot: INFO
+        web: INFO
+
+---
+
+server:
+  port: 8080
+  servlet:
+    context-path: /discovery-server
+
+eureka:
+  instance:
+    hostname: localhost
+    prefer-ip-address: true
+    metadata-map:
+      appname: ${spring.application.name}
+  # standalone mode
+  client:
+    registerWithEureka: false
+    fetchRegistry: false
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/discovery-server/eureka/
+

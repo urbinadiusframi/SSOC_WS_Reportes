@@ -1,0 +1,7 @@
+
+[submodule "SSOC_WS_Administracion_Instrumentos_Archivisticos"]
+	path = SSOC_WS_Administracion_Instrumentos_Archivisticos
+	url = git@github.com:GrupoDiusframi/SSOC_WS_Administracion_Instrumentos_Archivisticos.git
+[submodule "SSOC_WS_Integraciones"]
+	path = SSOC_WS_Integraciones
+	url = git@github.com:GrupoDiusframi/SSOC_WS_Integraciones.git

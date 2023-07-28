@@ -1,0 +1,34 @@
+spring:
+  application:
+    name: ssoc-spring-cfg
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+    import: configserver:http://config-server:8888
+
+---
+sgd:
+  keystore:
+    secret: SSOC_SecretKey#321_2022
+    keystoreFilename: /store/sender_keystore.p12
+    
+---
+jdbc:
+  jpa:
+    show-sql: false
+    format-sql: false
+    properties:
+      hibernate:
+        generate_statistics: false
+        jdbc:
+          time_zone: GMT-5
+
+---
+sgd:
+  admin:
+    authentication:
+      basic:
+        username: ssoc-admin-ia
+        password: Pwd_321

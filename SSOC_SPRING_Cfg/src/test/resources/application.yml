@@ -1,0 +1,34 @@
+spring:
+  cloud:
+    config:
+      enabled: false
+  sql:
+    init:
+      schema-locations: classpath*:db/hsqldb/schema.sql
+      data-locations: classpath*:db/hsqldb/data.sql
+  jpa:
+    hibernate:
+      ddl-auto: none
+
+eureka:
+  client:
+    enabled: false
+
+logging.level.org.springframework: INFO
+
+---
+sgd:
+  keystore:
+    secret: changeit
+    keystoreFilename: /store/sender_keystore.p12
+
+---
+jdbc:
+  jpa:
+    show-sql: false
+    format-sql: true
+    properties:
+      hibernate:
+        generate_statistics: true
+        jdbc:
+          time_zone: GMT-5

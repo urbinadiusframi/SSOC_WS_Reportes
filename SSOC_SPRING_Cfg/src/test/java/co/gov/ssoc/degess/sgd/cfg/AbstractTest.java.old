@@ -1,0 +1,136 @@
+//package org.springframework.samples.petclinic.visits.web;
+//
+//import java.io.IOException;
+//import java.sql.SQLException;
+//
+//import org.springframework.beans.factory.annotation.Autowired;
+//import org.springframework.beans.factory.annotation.Value;
+//import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+//import org.springframework.boot.test.context.SpringBootTest;
+//import org.springframework.http.MediaType;
+//import org.springframework.test.context.ActiveProfiles;
+//import org.springframework.test.web.servlet.MockMvc;
+//import org.springframework.test.web.servlet.MvcResult;
+//import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+//import org.springframework.util.MultiValueMap;
+//import org.springframework.web.context.WebApplicationContext;
+//
+//import com.fasterxml.jackson.core.JsonParseException;
+//import com.fasterxml.jackson.core.JsonProcessingException;
+//import com.fasterxml.jackson.databind.JsonMappingException;
+//import com.fasterxml.jackson.databind.ObjectMapper;
+//
+//import co.gov.ssoc.gedess.sgd.cfg.jwt.dto.JwtResponse;
+//import co.gov.ssoc.gedess.sgd.cfg.openapi.SwaggerConfig;
+//import co.gov.ssoc.gedess.sgd.model.entity.repository.JWTRoleRepository;
+//import co.gov.ssoc.gedess.sgd.model.entity.repository.JWTUserRepository;
+//
+////@RunWith(SpringRunner.class)
+//@ActiveProfiles("test")
+//@AutoConfigureMockMvc
+//@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT, classes = { AbstractTest.class,
+//		SwaggerConfig.class })
+//public abstract class AbstractTest {
+//
+//	@Autowired
+//	WebApplicationContext webApplicationContext;
+//
+//	@Autowired
+//	protected MockMvc mvc;
+//
+//	@Value("${authentication.basic.username}")
+//	protected String userName;
+//
+//	@Value("${authentication.basic.password}")
+//	protected String password;
+//
+//	protected static JwtResponse responseJwt;
+//
+//	@Autowired
+//	protected JWTUserRepository jwtUserRepository;
+//
+//	@Autowired
+//	protected JWTRoleRepository jwtRoleRepository;
+//
+////	@BeforeAll
+//	public static void initTest() throws SQLException {
+////		Server.createWebServer("-web", "-webAllowOthers", "-tcp", "-tcpAllowOthers", "-webPort", "0").start();
+//	}
+//
+//	protected String mapToJson(Object obj) throws JsonProcessingException {
+//		ObjectMapper objectMapper = new ObjectMapper();
+//		return objectMapper.writeValueAsString(obj);
+//	}
+//
+//	protected <T> T mapFromJson(String json, Class<T> clazz)
+//			throws JsonParseException, JsonMappingException, IOException {
+//
+//		ObjectMapper objectMapper = new ObjectMapper();
+//		return objectMapper.readValue(json, clazz);
+//	}
+//
+//	protected MvcResult mvcResultPostJmvcperform(String uri, String inputJson) throws Exception {
+//		return mvc.perform(
+//				MockMvcRequestBuilders.post(uri).contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson))
+//				.andReturn();
+//	}
+//
+//	protected MvcResult mvcResultGetJmvcperform(String uri, MultiValueMap<String, String> request) throws Exception {
+//		return mvc.perform(
+//				MockMvcRequestBuilders.get(uri).contentType(MediaType.APPLICATION_JSON_VALUE).queryParams(request))
+//				.andReturn();
+//	}
+//
+//	protected MvcResult mvcResultGet2Jmvcperform(String uri, MultiValueMap<String, String> request) throws Exception {
+//		return mvc
+//				.perform(MockMvcRequestBuilders.get(uri).contentType(MediaType.APPLICATION_JSON_VALUE).params(request))
+//				.andReturn();
+//	}
+//
+//	protected MvcResult mvcResultPutJmvcperform(String uri, String inputJson) throws Exception {
+//		return mvc.perform(
+//				MockMvcRequestBuilders.put(uri).contentType(MediaType.APPLICATION_JSON_VALUE).content(inputJson))
+//				.andReturn();
+//	}
+//
+//	public MvcResult postWithoutJwt(String uri, String inputJson) throws Exception {
+//		return mvc.perform(
+//				MockMvcRequestBuilders.post(uri).content(inputJson).contentType(MediaType.APPLICATION_JSON_VALUE))
+//				.andReturn();
+//	}
+//
+//	public MvcResult postWithBody(String uri, String inputJson) throws Exception {
+//		return mvc.perform(MockMvcRequestBuilders.post(uri).contentType(MediaType.APPLICATION_JSON_VALUE)
+//				.header("Authorization", "Bearer " + responseJwt.getToken()).accept(MediaType.APPLICATION_JSON_VALUE)
+//				.content(inputJson)).andReturn();
+//	}
+//
+//	public MvcResult getWithParams(String uri, String inputJson) throws Exception {
+//		return mvc.perform(MockMvcRequestBuilders.get(uri).contentType(MediaType.APPLICATION_JSON_VALUE)
+//				.header("Authorization", "Bearer " + responseJwt.getToken()).accept(MediaType.APPLICATION_JSON_VALUE)
+//				.param("subSerie", inputJson)).andReturn();
+//	}
+//
+//	public MvcResult getWithQueries(String uri, MultiValueMap<String, String> request) throws Exception {
+//		return mvc.perform(MockMvcRequestBuilders.get(uri).contentType(MediaType.APPLICATION_JSON_VALUE)
+//				.header("Authorization", "Bearer " + responseJwt.getToken()).accept(MediaType.APPLICATION_JSON_VALUE)
+//				.queryParams(request)).andReturn();
+//	}
+//
+//	public MvcResult getWithParams(String uri, MultiValueMap<String, String> request) throws Exception {
+//		return mvc.perform(MockMvcRequestBuilders.get(uri).contentType(MediaType.APPLICATION_JSON_VALUE)
+//				.header("Authorization", "Bearer " + responseJwt.getToken()).accept(MediaType.APPLICATION_JSON_VALUE)
+//				.params(request)).andReturn();
+//	}
+//
+//	public MvcResult execPost(String uri, Object request) throws Exception {
+//		String inputJson = mapToJson(request);
+//		return postWithBody(uri, inputJson);
+//	}
+//
+//	public MvcResult putWithContent(String uri, String inputJson) throws Exception {
+//		return mvc.perform(MockMvcRequestBuilders.put(uri).contentType(MediaType.APPLICATION_JSON_VALUE)
+//				.header("Authorization", "Bearer " + responseJwt.getToken()).accept(MediaType.APPLICATION_JSON_VALUE)
+//				.content(inputJson)).andReturn();
+//	}
+//}
