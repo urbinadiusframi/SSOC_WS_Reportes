@@ -1,4 +1,4 @@
-package co.gov.ssoc.gedess.sgd.model.entity.audit;
+package co.gov.ssoc.gedess.sgd.model.entity;
 
 import java.io.Serializable;
 

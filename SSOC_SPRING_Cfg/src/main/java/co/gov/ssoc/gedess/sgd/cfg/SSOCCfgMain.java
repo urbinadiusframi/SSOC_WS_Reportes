@@ -1,20 +1,9 @@
 package co.gov.ssoc.gedess.sgd.cfg;
 
-import java.util.HashMap;
-import java.util.Map;
-
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.common.serialization.StringSerializer;
-import org.hibernate.event.service.spi.EventListenerRegistry;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.kafka.core.DefaultKafkaProducerFactory;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.scheduling.annotation.EnableAsync;
 
-import co.gov.ssoc.gedess.sgd.cfg.audit.HibernateAuditListener;
-
+@EnableAsync
 @Configuration
 public class SSOCCfgMain {
 
@@ -36,30 +25,4 @@ public class SSOCCfgMain {
 //				.with("database.history.file.filename", "/tmp/dbhistory.dat").with("database.encrypt", false).build();
 //	}
 
-	@Value(value = "${spring.kafka.bootstrap-servers}")
-	private String bootstrapAddress;
-
-	@Bean
-	ProducerFactory<String, String> producerFactory() {
-		Map<String, Object> configProps = new HashMap<>();
-		configProps.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapAddress);
-		configProps.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-		configProps.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG, StringSerializer.class);
-		return new DefaultKafkaProducerFactory<>(configProps);
-	}
-
-	@Bean
-	KafkaTemplate<String, String> kafkaTemplate() {
-		return new KafkaTemplate<>(producerFactory());
-	}
-
-//	@Bean
-//	public HibernateAuditListener hibernateAuditListener(KafkaTemplate<String, String> kafkaTemplate,
-//			ObjectMapper objMapper) {
-//		return new HibernateAuditListener(kafkaTemplate, objMapper);
-//	}
-//	@Bean
-//    public HibernateAuditListener customPostLoadListener() {
-//        return new HibernateAuditListener();
-//    }
 }

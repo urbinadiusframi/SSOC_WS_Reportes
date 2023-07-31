@@ -1,4 +1,4 @@
-package co.gov.ssoc.gedess.sgd.cfg.persistence;
+package co.gov.ssoc.gedess.sgd.model.cfg;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

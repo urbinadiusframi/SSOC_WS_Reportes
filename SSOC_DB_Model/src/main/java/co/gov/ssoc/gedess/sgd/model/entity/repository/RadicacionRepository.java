@@ -53,6 +53,17 @@ public interface RadicacionRepository extends JpaRepository<ORadicacion, Long>
 	@Query(value = "SELECT r FROM ORadicacion r WHERE r.tramite IN :tramites")
 	List<ORadicacion> consultaTramite(@Param("tramites") List<OTramite> tramites);
 
+	@Query(value = "SELECT r FROM ORadicacion r WHERE r.tramite IN :tramites AND r.assignedDependencyName=:dependencia")
+	List<ORadicacion> consultaTramiteAll(@Param("tramites") List<OTramite> tramites,
+			@Param("dependencia") String dependencia);
+
+	@Query(value = "SELECT r FROM ORadicacion r WHERE r.tramite IN :tramites AND r.assignedDependencyName=:dependencia AND  r.documentaryType=:documentaryType1")
+	List<ORadicacion> consultaTramiteDocumentary(@Param("tramites") List<OTramite> tramites,
+			@Param("dependencia") String dependencia, @Param("documentaryType1") OTipoDocumental documentaryType1);
+
+	@Query(value = "SELECT r FROM ORadicacion r WHERE r.tramite IN :tramites ")
+	List<ORadicacion> consultaTramiteOne(@Param("tramites") List<OTramite> tramites);
+
 	@Query(value = "SELECT r FROM ORadicacion r WHERE r.tramite IN :tramites AND r.tipoSeguridad=:tpSeguridad AND r.stateRadicado IN :estados AND r.assignedDependencyName=:dependencia AND (r.dateRadication<:fechaF) AND (r.dateRadication>:fechaI)")
 	List<ORadicacion> consultaTramite(@Param("tramites") List<OTramite> tramites,
 			@Param("tpSeguridad") OTipoSeguridad tpSeguridad, @Param("estados") List<OEstadoRadicacion> estados,
@@ -67,12 +78,20 @@ public interface RadicacionRepository extends JpaRepository<ORadicacion, Long>
 	List<ORadicacion> estadosByFechaDep(@Param("dependencia") String dependencia, @Param("fechaI") Date fechaI,
 			@Param("fechaF") Date fechaF, @Param("tramites") List<OTramite> tramites);
 
-	@Query(value = "SELECT r FROM ORadicacion r WHERE r.tramite IN :tramites AND r.tipoSeguridad=:tpSeguridad AND r.stateRadicado IN :estados AND r.assignedDependencyName=:dependencia AND (r.dateRadication<:fechaF) AND (r.dateRadication>:fechaI) AND r.documentaryType=:documentaryType1")
+	@Query(value = "SELECT r FROM ORadicacion r WHERE r.tramite IN :tramites AND r.assignedDependencyName=:dependencia AND (r.dateRadication<:fechaF) AND (r.dateRadication>:fechaI) AND r.documentaryType=:documentaryType1")
 	List<ORadicacion> sentenciaByFechaDep(@Param("tramites") List<OTramite> tramites,
-			@Param("tpSeguridad") OTipoSeguridad tpSeguridad, @Param("estados") List<OEstadoRadicacion> estados,
 			@Param("dependencia") String dependencia, @Param("fechaI") Date fechaI, @Param("fechaF") Date fechaF,
 			@Param("documentaryType1") OTipoDocumental documentaryType1);
 
+	@Query(value = "SELECT r FROM ORadicacion r WHERE r.tramite IN :tramites ")
+	List<ORadicacion> tramitesAll(@Param("tramites") List<OTramite> tramites);
+
+	@Query(value = "SELECT r FROM ORadicacion r WHERE r.assignedDependencyName=:dependencia ")
+	List<ORadicacion> dependenciaAll( @Param("dependencia") String dependencia);
+
+	@Query(value = "SELECT r FROM ORadicacion r WHERE  r.documentaryType=:documentaryType1")
+	List<ORadicacion> tipoDocumentalAll( @Param("documentaryType1") OTipoDocumental documentaryType1);
+	
 	@Query(value = "SELECT r FROM ORadicacion r WHERE r.tramite IN :tramites AND r.assignedDependencyName=:dependencia AND (r.dateRadication<:fechaF) AND (r.dateRadication>:fechaI)")
 	List<ORadicacion> avisosByFecha(@Param("tramites") List<OTramite> tramites,
 			@Param("dependencia") String dependencia, @Param("fechaI") Date fechaI, @Param("fechaF") Date fechaF);

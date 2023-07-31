@@ -1,5 +1,6 @@
 package co.gov.ssoc.gedess.sgd.cfg.audit;
 
+import java.util.Date;
 import java.util.Map;
 
 import org.hibernate.HibernateException;
@@ -18,20 +19,13 @@ import org.hibernate.event.spi.PreDeleteEventListener;
 import org.hibernate.persister.entity.EntityPersister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import co.gov.ssoc.gedess.sgd.cfg.ApplicationContextProvider;
-import co.gov.ssoc.gedess.sgd.cfg.security.service.AuthService;
+import co.gov.ssoc.gedess.sgd.cfg.audit.dto.AuditoriaDTO;
+import co.gov.ssoc.gedess.sgd.cfg.audit.dto.EAuditType;
 
-//@Component
 public class HibernateAuditListener implements PostLoadEventListener, PostUpdateEventListener, PostInsertEventListener,
 		PreDeleteEventListener, PostDeleteEventListener, PersistEventListener {
 
@@ -41,54 +35,16 @@ public class HibernateAuditListener implements PostLoadEventListener, PostUpdate
 	private static final long serialVersionUID = 1L;
 	private static final Logger LOGGER = LoggerFactory.getLogger("audit-events");
 
-//	@Autowired
-	AuthService authService;
-
-//	@Autowired
-	private static KafkaTemplate<String, String> kafkaTemplate;
-
-//	@Autowired
-	private static ObjectMapper objMapper;
-
-//    @Autowired
-	private ApplicationContext applicationContext;
-
-//	@Autowired
-//	public void init(KafkaTemplate<String, String> kafkaTemplate, ObjectMapper objMapper) {
-//		this.kafkaTemplate = kafkaTemplate;
-//		this.objMapper = objMapper;
-//	}
-
-//	@Override
-//	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-//		this.kafkaTemplate = ApplicationContextProvider.getApplicationContext().getBean(KafkaTemplate.class);
-//		this.objMapper = ApplicationContextProvider.getApplicationContext().getBean(ObjectMapper.class);
-//	}
-
-//	public HibernateAuditListener(KafkaTemplate<String, String> kafkaTemplate, ObjectMapper objMapper) {
-//		this.kafkaTemplate = kafkaTemplate;
-//		this.objMapper = objMapper;
-//
-//	}
-
-//	public HibernateAuditListener() {
-//		this.kafkaTemplate = ApplicationContextProvider.getApplicationContext().getBean(KafkaTemplate.class);
-//		this.objMapper = ApplicationContextProvider.getApplicationContext().getBean(ObjectMapper.class);
-//	}
-
-	public void sendMessage(Object message) {
-		this.authService = ApplicationContextProvider.getApplicationContext().getBean(AuthService.class);
-		this.kafkaTemplate = ApplicationContextProvider.getApplicationContext().getBean(KafkaTemplate.class);
-		this.objMapper = ApplicationContextProvider.getApplicationContext().getBean(ObjectMapper.class);
+	public void sendMessage(Object message, EAuditType type) {
 		try {
-			kafkaTemplate.send("auditoria_log", objMapper.writeValueAsString(message));
+			ApplicationContextProvider.getApplicationContext().getBean(AuditRevisionListener.class)
+					.newRevision(AuditoriaDTO
+							.builder().contenido(ApplicationContextProvider.getApplicationContext()
+									.getBean(ObjectMapper.class).writeValueAsString(message))
+							.tipo(type).fecha(new Date()).build());
 		} catch (Exception e) {
 			LOGGER.error("auditoria_log kafka message", e);
 		}
-	}
-
-	public void sendMessage(String message) {
-		kafkaTemplate.send("auditoria_log", message);
 	}
 
 	@Override
@@ -96,54 +52,47 @@ public class HibernateAuditListener implements PostLoadEventListener, PostUpdate
 		LOGGER.info("Key = 'postload' value = '{}'", event.getEntity());
 	}
 
-//	@PostLoad
-//	public void postLoad(Object entity) {
-//		LOGGER.info("Key = 'postload' value = '{}'", entity);
-//		sendMessage(entity);
-//	}
-
 	@Override
 	public boolean requiresPostCommitHanding(EntityPersister persister) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public void onPostUpdate(PostUpdateEvent event) {
 		LOGGER.info("Key = '{}' value = '{}'", event.getClass(), event.getEntity());
-		sendMessage(event.getEntity());
+		sendMessage(event.getEntity(), EAuditType.MOD);
 	}
 
 	@Override
 	public boolean onPreDelete(PreDeleteEvent event) {
 		LOGGER.info("Key = '{}' value = '{}'", event.getClass(), event.getEntity());
-		sendMessage(event.getEntity());
+		sendMessage(event.getEntity(), EAuditType.DEL);
 		return true;
 	}
 
 	@Override
 	public void onPostInsert(PostInsertEvent event) {
 		LOGGER.info("Key = '{}' value = '{}'", event.getClass(), event.getEntity());
-		sendMessage(event.getEntity());
+		sendMessage(event.getEntity(), EAuditType.INS);
 
 	}
 
 	@Override
 	public void onPostDelete(PostDeleteEvent event) {
 		LOGGER.info("Key = '{}' value = '{}'", event.getClass(), event.getEntity());
-		sendMessage(event.getEntity());
+		sendMessage(event.getEntity(), EAuditType.DEL);
 	}
 
 	@Override
 	public void onPersist(PersistEvent event) throws HibernateException {
 		LOGGER.info("Key = '{}' value = '{}'", event.getClass(), event.getObject());
-		sendMessage(event.getObject());
+		sendMessage(event.getObject(), EAuditType.INS);
 	}
 
 	@Override
 	public void onPersist(PersistEvent event, Map createdAlready) throws HibernateException {
 		LOGGER.info("Key = '{}' value = '{}'", event.getClass(), event.getObject());
-		sendMessage(event.getObject());
+		sendMessage(event.getObject(), EAuditType.INS);
 	}
 
 }

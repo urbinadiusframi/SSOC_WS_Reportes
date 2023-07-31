@@ -1,4 +1,4 @@
-package co.gov.ssoc.gedess.sgd.cfg.persistence;
+package co.gov.ssoc.gedess.sgd.model.cfg;
 
 import java.nio.charset.StandardCharsets;
 import java.sql.Connection;
@@ -11,11 +11,9 @@ import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 @Component
-//@Profile("test")
 public class DBInitializationServiceImpl {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger("constantes-events");

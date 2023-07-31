@@ -35,6 +35,8 @@ public class Constantes {
 	public static final String AUDIT_ENTIDAD = "AUDIT_ENTIDAD";
 	public static final String AUDIT_VALUE = "AUDIT_VALUE";
 	public static final String AUDIT_COMPONENT = "AUDIT_COMPONENT";
+	public static final String AUDIT_USER = "AUDIT_USER";
+	public static final String AUDIT_USER_ID = "AUDIT_USER_ID";
 
 	private Integer toInt(String value) {
 		try {

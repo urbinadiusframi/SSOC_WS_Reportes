@@ -1,4 +1,4 @@
-package co.gov.ssoc.gedess.sgd.cfg.persistence;
+package co.gov.ssoc.gedess.sgd.model.cfg;
 
 import java.util.Properties;
 
@@ -27,7 +27,6 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import co.gov.ssoc.gedess.sgd.cfg.audit.HibernateAuditListener;
 
 @Configuration
 @EnableTransactionManagement

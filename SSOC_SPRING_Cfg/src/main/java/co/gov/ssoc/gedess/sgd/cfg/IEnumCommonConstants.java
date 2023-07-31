@@ -1,4 +1,4 @@
-package co.gov.ssoc.gedess.sgd.model.constants;
+package co.gov.ssoc.gedess.sgd.cfg;
 
 public interface IEnumCommonConstants {
 

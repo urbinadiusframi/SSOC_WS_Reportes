@@ -8,30 +8,28 @@ import org.slf4j.MDC;
 import org.springframework.context.annotation.Profile;
 
 import co.gov.ssoc.gedess.sgd.cfg.Constantes;
-import co.gov.ssoc.gedess.sgd.model.entity.audit.OAudit;
 
 @Profile("!prod")
-public class SSOCRevisionListener 
-//implements org.hibernate.envers.RevisionListener 
+public class EnversRevisionListener
 {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(SSOCRevisionListener.class);
+	private static final Logger LOGGER = LoggerFactory.getLogger(EnversRevisionListener.class);
 
 //	@Override
 	public void newRevision(Object entity) {
-		if (entity instanceof OAudit) {
-			String entidad = MDC.get(Constantes.AUDIT_ENTIDAD);
-			String value = MDC.get(Constantes.AUDIT_VALUE);
-			String comp = MDC.get(Constantes.AUDIT_COMPONENT);
-			OAudit revisionEntity = (OAudit) entity;
-			revisionEntity.setComponente(comp);
-			revisionEntity.setEntidad(entidad);
-			revisionEntity.setContenido(value);
+//		if (entity instanceof OAudit) {
+//			String entidad = MDC.get(Constantes.AUDIT_ENTIDAD);
+//			String value = MDC.get(Constantes.AUDIT_VALUE);
+//			String comp = MDC.get(Constantes.AUDIT_COMPONENT);
+//			OAudit revisionEntity = (OAudit) entity;
+//			revisionEntity.setComponente(comp);
+//			revisionEntity.setEntidad(entidad);
+//			revisionEntity.setContenido(value);
 //			String comprobacion = calculateMD5Hash(String.format("{0}|{1}|{2}|{3:ddMMyyyyHHmmss}|{4}|{5}|{6}",
 //					TipoAuditoria, entidad, identificador, fecha, usuario, maquina, contenido));
 //			revisionEntity.setComprobacion(comprobacion);
 
-		}
+//		}
 	}
 
 	public static String calculateMD5Hash(String input) {

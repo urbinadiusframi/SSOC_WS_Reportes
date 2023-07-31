@@ -1,15 +1,14 @@
-package co.gov.ssoc.gedess.sgd.cfg.security.service;
+package co.gov.ssoc.gedess.sgd.cfg.security.service.impl;
 
-import java.io.FileInputStream;
 import java.nio.charset.StandardCharsets;
-import java.security.KeyStore;
 import java.util.Base64;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
-import co.gov.ssoc.gedess.sgd.model.constants.IEnumCommonConstants;
+import co.gov.ssoc.gedess.sgd.cfg.IEnumCommonConstants;
+import co.gov.ssoc.gedess.sgd.cfg.security.service.AuthService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
