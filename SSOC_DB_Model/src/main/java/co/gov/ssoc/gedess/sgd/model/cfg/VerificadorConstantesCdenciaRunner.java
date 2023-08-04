@@ -347,7 +347,7 @@ public class VerificadorConstantesCdenciaRunner implements ApplicationRunner {
 		OSerie oseriena = null;
 		OSubSerie osubseriena = null;
 		try {
-			oseriena = new OSerie(null, 0, "NA", null, true, null, null, null, null, null, null, null);
+			oseriena = new OSerie(null, -1, "NA", null, true, null, null, null, null, null, null, null);
 			List<OSerie> list = serieRepository.findAll(Example.of(oseriena));
 			if (list.isEmpty()) {
 				oseriena = serieRepository.save(oseriena);
@@ -356,7 +356,7 @@ public class VerificadorConstantesCdenciaRunner implements ApplicationRunner {
 			// SUBSERIES
 
 			try {
-				osubseriena = new OSubSerie(null, BigInteger.ZERO, "NA", true, oseriena.getId(), null, null, null, null,
+				osubseriena = new OSubSerie(null, BigInteger.valueOf(-1), "NA", true, oseriena.getId(), null, null, null, null,
 						null, null, null);
 				List<OSubSerie> listss = subSerieRepository.findAll(Example.of(osubseriena));
 				if (listss.isEmpty())

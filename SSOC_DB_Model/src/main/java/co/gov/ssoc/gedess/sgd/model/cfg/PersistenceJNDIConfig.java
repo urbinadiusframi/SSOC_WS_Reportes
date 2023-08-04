@@ -34,6 +34,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 //, repositoryFactoryBeanClass = org.springframework.data.envers.repository.support.EnversRevisionRepositoryFactoryBean.class // activar
 )
 public class PersistenceJNDIConfig {
+	private static final String CO_GOV_SSOC_GEDESS_SGD_CFG_AUDIT_HIBERNATE_AUDIT_LISTENER = "co.gov.ssoc.gedess.sgd.cfg.audit.HibernateAuditListener";
+
 	private static final String PERSISTENCE_JNDI_CONFIG = "PersistenceJNDIConfig -->{}<--";
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceJNDIConfig.class);
@@ -49,7 +51,7 @@ public class PersistenceJNDIConfig {
 
 	@Bean
 	@Primary
-	public LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource auditDataSource) {
+	LocalContainerEntityManagerFactoryBean entityManagerFactory(DataSource auditDataSource) {
 		final LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
 		em.setDataSource(auditDataSource);
 		em.setJpaVendorAdapter(new HibernateJpaVendorAdapter());
@@ -60,7 +62,7 @@ public class PersistenceJNDIConfig {
 
 	@Primary
 	@Bean(name = "dataSource")
-	public DataSource primaryDataSource() throws NamingException {
+	DataSource primaryDataSource() throws NamingException {
 		LOGGER.info(PERSISTENCE_JNDI_CONFIG, activeProfile);
 		if (activeProfile.equals("prod")) {
 			LOGGER.info(PERSISTENCE_JNDI_CONFIG, systemPropertiesDacartectJdbcDatasourceJdni);
@@ -78,9 +80,6 @@ public class PersistenceJNDIConfig {
 		return dataSource;
 	}
 
-//	@Autowired
-//	HibernateAuditListener hibernateAuditListener;
-
 	private Properties hibernateProperties() {
 		Properties properties = new Properties();
 
@@ -88,9 +87,9 @@ public class PersistenceJNDIConfig {
 		properties.put("hibernate.show_sql", false);
 		properties.put("hibernate.format_sql", false);
 		properties.put("hibernate.generate_statistics", false);
-		properties.put("hibernate.ejb.event.post-insert", "co.gov.ssoc.gedess.sgd.cfg.audit.HibernateAuditListener");
-		properties.put("hibernate.ejb.event.post-delete", "co.gov.ssoc.gedess.sgd.cfg.audit.HibernateAuditListener");
-		properties.put("hibernate.ejb.event.post-update", "co.gov.ssoc.gedess.sgd.cfg.audit.HibernateAuditListener");
+		properties.put("hibernate.ejb.event.post-insert", CO_GOV_SSOC_GEDESS_SGD_CFG_AUDIT_HIBERNATE_AUDIT_LISTENER);
+		properties.put("hibernate.ejb.event.post-delete", CO_GOV_SSOC_GEDESS_SGD_CFG_AUDIT_HIBERNATE_AUDIT_LISTENER);
+		properties.put("hibernate.ejb.event.post-update", CO_GOV_SSOC_GEDESS_SGD_CFG_AUDIT_HIBERNATE_AUDIT_LISTENER);
 //		properties.put("hibernate.ejb.event.post-load", "co.gov.ssoc.gedess.sgd.cfg.audit.HibernateAuditListener");
 		properties.setProperty("hibernate.jdbc.time_zone",
 				env.getProperty("jdbc.jpa.properties.hibernate.jdbc.time_zone"));

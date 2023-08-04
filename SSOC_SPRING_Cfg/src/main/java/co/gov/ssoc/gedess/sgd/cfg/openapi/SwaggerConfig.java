@@ -36,7 +36,7 @@ public class SwaggerConfig {
 	private String apiName;
 
 	@Bean
-	public Docket api() {
+	Docket api() {
 		Set<String> setA = new HashSet<String>();
 		setA.add("application/json");
 		return new Docket(DocumentationType.SWAGGER_2).select()
@@ -51,7 +51,7 @@ public class SwaggerConfig {
 	}
 
 	@Bean
-	public static BeanPostProcessor springfoxHandlerProviderBeanPostProcessor() {
+	static BeanPostProcessor springfoxHandlerProviderBeanPostProcessor() {
 		return new BeanPostProcessor() {
 
 			@Override

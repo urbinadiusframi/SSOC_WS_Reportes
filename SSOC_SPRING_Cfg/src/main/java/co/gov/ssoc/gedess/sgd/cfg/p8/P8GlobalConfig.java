@@ -19,9 +19,9 @@ public class P8GlobalConfig {
 //	private String systemPropertiesP8Url;
 //	@Value("#{systemProperties['p8.usr']}")
 //	private String systemPropertiesP8Usr;
-//	@Value("#{systemProperties['p8.content.path-base']}")
+//	@Value("#{systemProperties['p8.contentPathBase']}")
 //	private String systemPropertiesP8ContentPathBase;
-//	@Value("#{systemProperties['p8.records.path-base']}")
+//	@Value("#{systemProperties['p8.recordsPathBase']}")
 //	private String systemPropertiesP8RecordsPathBase;
 //	@Value("#{systemProperties['p8.records.file-plan']}")
 //	private String systemPropertiesP8RecordsFilePlan;
@@ -40,9 +40,9 @@ public class P8GlobalConfig {
 //	private String p8Url;
 //	@Value("${p8.usr}")
 //	private String p8Usr;
-//	@Value("${p8.content.path-base}")
+//	@Value("${p8.contentPathBase}")
 //	private String p8ContentPathBase;
-//	@Value("${p8.records.path-base}")
+//	@Value("${p8.recordsPathBase}")
 //	private String p8RecordsPathBase;
 //	@Value("${p8.records.file-plan}")
 //	private String p8RecordsFilePlan;
