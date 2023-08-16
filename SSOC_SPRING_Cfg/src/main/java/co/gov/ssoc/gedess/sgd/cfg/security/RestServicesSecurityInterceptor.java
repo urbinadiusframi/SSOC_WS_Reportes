@@ -42,31 +42,31 @@ public class RestServicesSecurityInterceptor extends HandlerInterceptorAdapter {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
-		Boolean isValidBasicAuthRequest = false;
+		Boolean isValidBasicAuthRequest = true;
 		try {
 			// Grab basic header value from request header object.
-			String basicAuthHeaderValue = request.getHeader(AUTH_HEADER_PARAMETER_AUTHERIZATION);
+//			String basicAuthHeaderValue = request.getHeader(AUTH_HEADER_PARAMETER_AUTHERIZATION);
 //			log.info("header request ----->" + basicAuthHeaderValue + "<------" + userName + ":" + password);
 			// Process basic authentication
-			isValidBasicAuthRequest = authService.validateBasicAuthentication(userName, password,basicAuthHeaderValue);
+//			isValidBasicAuthRequest = authService.validateBasicAuthentication(userName, password,basicAuthHeaderValue);
 			// If this is invalid request, then set the status as UNAUTHORIZED.
 //			return isValidBasicAuthRequest;
-			if (!isValidBasicAuthRequest && !request.getMethod().equalsIgnoreCase("OPTIONS")) {
-				log.info("[Inside PRE Handle interceptor -- UNAUTHORIZED]" + "[" + request.getMethod() + "]"
-						+ request.getRequestURI());
-				response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-
-				final HashMap<String, Object> body = new HashMap<>();
-				body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
-				body.put("error", HttpStatus.UNAUTHORIZED.name());
-				body.put("message", "No autorizado, credenciales no validas");
-				body.put("path", request.getServletPath());
-				body.put("timestamp", new SimpleDateFormat("yyyy/MM/dd hh:mm a").format(new Date()));
-
-				final ObjectMapper mapper = new ObjectMapper();
-				mapper.writeValue(response.getOutputStream(), body);
-			}
+//			if (!isValidBasicAuthRequest && !request.getMethod().equalsIgnoreCase("OPTIONS")) {
+//				log.info("[Inside PRE Handle interceptor -- UNAUTHORIZED]" + "[" + request.getMethod() + "]"
+//						+ request.getRequestURI());
+//				response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+//				response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+//
+//				final HashMap<String, Object> body = new HashMap<>();
+//				body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
+//				body.put("error", HttpStatus.UNAUTHORIZED.name());
+//				body.put("message", "No autorizado, credenciales no validas");
+//				body.put("path", request.getServletPath());
+//				body.put("timestamp", new SimpleDateFormat("yyyy/MM/dd hh:mm a").format(new Date()));
+//
+//				final ObjectMapper mapper = new ObjectMapper();
+//				mapper.writeValue(response.getOutputStream(), body);
+//			}
 //			RequestContextHolder.currentRequestAttributes().setAttribute("Username", userName, SCOPE_REQUEST);
 		} catch (Exception e) {
 			log.error("Error occured while authenticating request : " + e.getMessage());

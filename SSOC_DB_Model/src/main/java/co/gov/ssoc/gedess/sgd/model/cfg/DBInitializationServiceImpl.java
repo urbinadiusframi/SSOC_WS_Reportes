@@ -35,7 +35,7 @@ public class DBInitializationServiceImpl {
 					executeUpdate(connection, statement);
 				}
 			} catch (Exception e) {
-				LOGGER.error("post-construct", e);
+				LOGGER.error("SiguienteCodigoTipoDocumental.sql", e);
 			}
 			try {
 				String inputString = IOUtils.toString(this.getClass().getResourceAsStream("/ds/0.TIPOS.TODAS.sql"),
@@ -45,7 +45,7 @@ public class DBInitializationServiceImpl {
 					executeUpdate(connection, statement);
 				}
 			} catch (Exception e) {
-				LOGGER.error("post-construct", e);
+				LOGGER.error("0.TIPOS.TODAS.sql", e);
 			}
 			try {
 				String inputString = IOUtils.toString(
@@ -55,7 +55,7 @@ public class DBInitializationServiceImpl {
 					executeUpdate(connection, statement);
 				}
 			} catch (Exception e) {
-				LOGGER.error("post-construct", e);
+				LOGGER.error("CKTramiteCodigoYNombre.sql", e);
 			}
 			try {
 				String inputString = IOUtils.toString(
@@ -65,7 +65,7 @@ public class DBInitializationServiceImpl {
 					executeUpdate(connection, statement);
 				}
 			} catch (Exception e) {
-				LOGGER.error("post-construct", e);
+				LOGGER.error("CKCuadernoCodigoYNombre.sql", e);
 			}
 			try {
 				String inputString = IOUtils.toString(
@@ -77,7 +77,7 @@ public class DBInitializationServiceImpl {
 					executeUpdate(connection, statement);
 				}
 			} catch (Exception e) {
-				LOGGER.error("post-construct", e);
+				LOGGER.error("SP_GET_CONSECUTIVE_RADICADO", e);
 			}
 			try {
 				String inputString = IOUtils.toString(
@@ -88,7 +88,28 @@ public class DBInitializationServiceImpl {
 					executeUpdate(connection, statement);
 				}
 			} catch (Exception e) {
-				LOGGER.error("post-construct", e);
+				LOGGER.error("sqc_radicado", e);
+			}
+			try {
+				String inputString = IOUtils.toString(
+						this.getClass().getResourceAsStream("/ds/0.SiguienteIdFirmaDigital.sql"),
+						StandardCharsets.UTF_8);
+				String[] statements = inputString.split(";");
+				for (String statement : statements) {
+					executeUpdate(connection, statement);
+				}
+			} catch (Exception e) {
+				LOGGER.error("SiguienteIdFirmaDigital.sql", e);
+			}
+			try {
+				String inputString = IOUtils.toString(this.getClass().getResourceAsStream(
+						"/ds/CREATE-PROCEDURE.[correspondencia].[consultaHash].sql"), StandardCharsets.UTF_8);
+				String[] statements = inputString.split(";");
+				for (String statement : statements) {
+					executeUpdate(connection, statement);
+				}
+			} catch (Exception e) {
+				LOGGER.error("consultaHash", e);
 			}
 //			try {
 //				String inputString = IOUtils.toString(this.getClass().getResourceAsStream("/ds/0.enable-db-cdc.sql"),

@@ -1,5 +1,6 @@
 package co.gov.ssoc.gedess.sgd.model.entity.repository;
 
+import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -87,11 +88,11 @@ public interface RadicacionRepository extends JpaRepository<ORadicacion, Long>
 	List<ORadicacion> tramitesAll(@Param("tramites") List<OTramite> tramites);
 
 	@Query(value = "SELECT r FROM ORadicacion r WHERE r.assignedDependencyName=:dependencia ")
-	List<ORadicacion> dependenciaAll( @Param("dependencia") String dependencia);
+	List<ORadicacion> dependenciaAll(@Param("dependencia") String dependencia);
 
 	@Query(value = "SELECT r FROM ORadicacion r WHERE  r.documentaryType=:documentaryType1")
-	List<ORadicacion> tipoDocumentalAll( @Param("documentaryType1") OTipoDocumental documentaryType1);
-	
+	List<ORadicacion> tipoDocumentalAll(@Param("documentaryType1") OTipoDocumental documentaryType1);
+
 	@Query(value = "SELECT r FROM ORadicacion r WHERE r.tramite IN :tramites AND r.assignedDependencyName=:dependencia AND (r.dateRadication<:fechaF) AND (r.dateRadication>:fechaI)")
 	List<ORadicacion> avisosByFecha(@Param("tramites") List<OTramite> tramites,
 			@Param("dependencia") String dependencia, @Param("fechaI") Date fechaI, @Param("fechaF") Date fechaF);
@@ -310,4 +311,9 @@ public interface RadicacionRepository extends JpaRepository<ORadicacion, Long>
 	@Query(value = "ALTER SEQUENCE correspondencia.sqc_borrador RESTART WITH 1", nativeQuery = true)
 	void resetSequenceB();
 
+	@Query(value = "SELECT NEXT VALUE FOR [Administracion].[sqc_camerfirma_id_app]", nativeQuery = true)
+	BigInteger findBySiguienteIdApp();
+
+	@Query(value = "SELECT NEXT VALUE FOR [Administracion].[sqc_camerfirma_id_user]", nativeQuery = true)
+	BigInteger findBySiguienteIdUser();
 }

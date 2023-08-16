@@ -85,7 +85,7 @@ public class ORadicacion implements Serializable {
 	private OEstadoRadicacion stateRadicado;
 	
 	@Column(name = "number_folios")
-	private int numberFolios;
+	private Integer numberFolios;
 	
 	@Column(name = "assigned_dependency_id")
 	private Integer assignedDependencyId;
@@ -145,7 +145,7 @@ public class ORadicacion implements Serializable {
 	@Column(name = "sending_channel_code")
 	private String sendingChannelCode;
 	@Column(name = "days_term")
-	private int daysTerm;	
+	private Integer daysTerm;	
 	@Column(name = "date_term_vigence")
 	private Date dateTermVigence;
 	@Column(name = "number_radication_last")
