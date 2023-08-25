@@ -5,3 +5,6 @@
 [submodule "SSOC_WS_Integraciones"]
 	path = SSOC_WS_Integraciones
 	url = git@github.com:GrupoDiusframi/SSOC_WS_Integraciones.git
+[submodule "SSOC_WS_Auditoria"]
+	path = SSOC_WS_Auditoria
+	url = git@github.com:GrupoDiusframi/SSOC_WS_Auditoria.git
