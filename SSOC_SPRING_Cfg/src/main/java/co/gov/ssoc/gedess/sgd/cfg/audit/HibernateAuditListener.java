@@ -1,5 +1,6 @@
 package co.gov.ssoc.gedess.sgd.cfg.audit;
 
+import java.lang.reflect.Field;
 import java.util.Date;
 import java.util.Map;
 
@@ -19,12 +20,15 @@ import org.hibernate.event.spi.PreDeleteEventListener;
 import org.hibernate.persister.entity.EntityPersister;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import co.gov.ssoc.gedess.sgd.cfg.ApplicationContextProvider;
+import co.gov.ssoc.gedess.sgd.cfg.Constantes;
 import co.gov.ssoc.gedess.sgd.cfg.audit.dto.AuditoriaDTO;
 import co.gov.ssoc.gedess.sgd.cfg.audit.dto.EAuditType;
+import co.gov.ssoc.gedess.sgd.cfg.security.AuthTokenFilter;
 
 public class HibernateAuditListener implements PostLoadEventListener, PostUpdateEventListener, PostInsertEventListener,
 		PreDeleteEventListener, PostDeleteEventListener, PersistEventListener {
@@ -37,11 +41,30 @@ public class HibernateAuditListener implements PostLoadEventListener, PostUpdate
 
 	public void sendMessage(Object message, EAuditType type) {
 		try {
+			String comp = MDC.get(AuthTokenFilter.AUDIT_COMPONENT);
+			String usuario = MDC.get(AuthTokenFilter.AUDIT_USER);
+			String usuarioid = MDC.get(AuthTokenFilter.AUDIT_USER_ID);
+			String ipAddress = MDC.get(AuthTokenFilter.AUDIT_ORIGIN_IP_ADDRESS);
+
+			Class<?> clazz = message.getClass();
+			Field[] fields = clazz.getDeclaredFields();
+			String identificador = null;
+			for (Field field : fields) {
+				if (field.isAnnotationPresent(org.springframework.data.annotation.Id.class)
+						|| field.isAnnotationPresent(javax.persistence.Id.class)) {
+					field.setAccessible(true);
+					Object idValue = field.get(message);
+					identificador = idValue.toString();
+					break;
+				}
+			}
+
 			ApplicationContextProvider.getApplicationContext().getBean(AuditRevisionListener.class)
-					.newRevision(AuditoriaDTO
-							.builder().contenido(ApplicationContextProvider.getApplicationContext()
-									.getBean(ObjectMapper.class).writeValueAsString(message))
-							.tipo(type).fecha(new Date()).build());
+					.newRevision(AuditoriaDTO.builder().componente(comp).usuario(usuario).usuarioId(toLong(usuarioid))
+							.maquina(ipAddress).entidad(clazz.getCanonicalName())
+							.contenido(ApplicationContextProvider.getApplicationContext().getBean(ObjectMapper.class)
+									.writeValueAsString(message))
+							.identificador(identificador).tipo(type).fecha(new Date()).build());
 		} catch (Exception e) {
 			LOGGER.error("auditoria_log kafka message", e);
 		}
@@ -93,6 +116,15 @@ public class HibernateAuditListener implements PostLoadEventListener, PostUpdate
 	public void onPersist(PersistEvent event, Map createdAlready) throws HibernateException {
 		LOGGER.info("Key = '{}' value = '{}'", event.getClass(), event.getObject());
 		sendMessage(event.getObject(), EAuditType.INS);
+	}
+
+	private Long toLong(String usuarioid) {
+		try {
+			return Long.parseLong(usuarioid);
+		} catch (Exception e) {
+			LOGGER.warn("toLong", e);
+		}
+		return null;
 	}
 
 }

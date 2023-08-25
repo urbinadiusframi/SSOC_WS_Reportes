@@ -1,15 +1,6 @@
 /// <reference types="cypress" />
+import "cypress-iframe";
 
-// Welcome to Cypress!
-//
-// This spec file contains a variety of sample tests
-// for a todo list app that are designed to demonstrate
-// the power of writing tests in Cypress.
-//
-// To learn more about how Cypress works and
-// what makes it such an awesome testing tool,
-// please read our getting started guide:
-// https://on.cypress.io/introduction-to-cypress
 
 describe('Generar Producción Documental', () => {
   beforeEach(() => {
@@ -17,14 +8,18 @@ describe('Generar Producción Documental', () => {
   })
 
   it('navbar operativo', () => {
-    cy.get('[ng-hide="hideServices && hideProcesses"] > .menu-heading > .filter > .form-group > .form-control').type('Generar Producción Documental')
-    cy.get('#collapseLaunchsMenu > .menu-list > [style=""]').should('contain.text', 'Generar Producción Documental')
-    cy.get('#collapseLaunchsMenu > .menu-list > [style=""]').click()
-
-    cy.get('#div_6_1 > iframe', { timeout: 90000 }).then(iframe => {
-      iframe.get('#collapseLaunchsMenu > .menu-list > [style=""]').click()
+    
+    cy.get('#collapseLaunchsMenu > div').children('div').should('have.length.gt', 1)
+    cy.get(':nth-child(6) > #launch-menu-item-icon-service > :nth-child(1) > .menu-link-body > a.ng-binding').should('contain.text', 'Generar Producción Documental')
+    cy.intercept('GET', 'https://dev-servicios-dmz.supersociedades.gov.co:1444/ConsultaTerceros/*').as('specificXhr');
+    cy.get(':nth-child(6) > #launch-menu-item-icon-service > :nth-child(1) > .menu-link-body > a.ng-binding').click()
+    cy.wait(10000)
+      cy.wait('@specificXhr').then(() => {
+      cy.get('.name > a').should('contain.text', 'Generar Producción Documental')
+      // cy.intercept('GET', '**').as('associatedRequests');
+      // cy.wait('@associatedRequests');
+      // cy.get('#dropdownForm1').should('contain.text', 'Seleccione un tipo de identificación')
+      // cy.get('#dropdownForm1').click()
     });
-
-
   })
 })

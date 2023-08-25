@@ -65,16 +65,12 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public Boolean validateBasicAuthentication(String appUserName, String appPassword, String basicAuthHeaderValue) {
-
 		if (StringUtils.hasText(basicAuthHeaderValue)
 				&& basicAuthHeaderValue.toLowerCase().startsWith(IEnumCommonConstants.PREFIX_AUTH)) {
-			// Authorization: Basic base64credentials
 			String base64Credentials = basicAuthHeaderValue.substring(IEnumCommonConstants.PREFIX_AUTH.length()).trim();
 			byte[] credDecoded = Base64.getDecoder().decode(base64Credentials);
 			String credentials = new String(credDecoded, StandardCharsets.UTF_8);
-			// credentials = username:password
 			final String[] values = credentials.split(":", 2);
-
 			if (values != null && values.length == 2) {
 				String username = values[0];
 				String password = values[1];

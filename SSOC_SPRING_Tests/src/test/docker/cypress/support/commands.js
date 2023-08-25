@@ -25,6 +25,7 @@
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 
 // cypress/support/e2e.js
+import 'cypress-iframe';
 
 Cypress.Commands.add('login', (username, password) => {
   // Logic to perform login
@@ -42,3 +43,19 @@ Cypress.Commands.add('loginSSOCDllo', (username, password) => {
   cy.get('#password').type(password);
   cy.get('button[type="submit"]').click();
 });
+
+Cypress.Commands.add('loginSSOCPreConsultaMigrados', (username, password) => {
+  // Logic to perform login
+  cy.visit('/');
+  cy.get('#providers-list > :nth-child(1)').click()
+  cy.get('#username').type(username);
+  cy.get('#password').type(password);
+  cy.get('button[type="submit"]').click();
+});
+
+Cypress.Commands.add('getIframe', (iframeLocator) => {
+  cy.get(iframeLocator)
+    .its('0.contentDocument').should('not.be.empty')
+    .its('body h1').should('contain', 'IFrame title') // retry body
+    .then(cy.wrap)
+})

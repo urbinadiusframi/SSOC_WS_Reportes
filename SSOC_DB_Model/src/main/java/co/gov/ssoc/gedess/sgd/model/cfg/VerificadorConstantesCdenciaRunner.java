@@ -53,6 +53,8 @@ public class VerificadorConstantesCdenciaRunner implements ApplicationRunner {
 	@Autowired
 	private TipoCuadernoRepository tipoCuadernoRepository;
 	@Autowired
+	private TramitesRepository tramiteRelacionesRepository;
+	@Autowired
 	private TipoSeguridadRepository tipoSeguridadRepository;
 	@Autowired
 	private TipoExpedienteRepository tipoExpedienteRepository;
@@ -62,8 +64,6 @@ public class VerificadorConstantesCdenciaRunner implements ApplicationRunner {
 	private TipoDocumentalRepository tipoDocumentalRepository;
 	@Autowired
 	private EstadoRadicacionRepository estadoRadicacionRepository;
-	@Autowired
-	private TramitesRepository tramiteRelacionesRepository;
 
 	@Override
 	public void run(ApplicationArguments args) throws Exception {
@@ -328,8 +328,8 @@ public class VerificadorConstantesCdenciaRunner implements ApplicationRunner {
 			// SUBSERIES
 
 			try {
-				osubserietodas = new OSubSerie(null, BigInteger.ZERO, "TODAS", true, oserietodas.getId(), null, null, null, null,
-						null, null, null);
+				osubserietodas = new OSubSerie(null, BigInteger.ZERO, "TODAS", true, oserietodas.getId(), null, null,
+						null, null, null, null, null);
 				List<OSubSerie> listss = subSerieRepository.findAll(Example.of(osubserietodas));
 				if (listss.isEmpty())
 					osubserietodas = subSerieRepository.save(osubserietodas);
@@ -343,7 +343,7 @@ public class VerificadorConstantesCdenciaRunner implements ApplicationRunner {
 		} catch (Exception e) {
 			LOGGER.debug("constantsVerifier-run crear-serie", e);
 		}
-		
+
 		OSerie oseriena = null;
 		OSubSerie osubseriena = null;
 		try {
@@ -356,8 +356,8 @@ public class VerificadorConstantesCdenciaRunner implements ApplicationRunner {
 			// SUBSERIES
 
 			try {
-				osubseriena = new OSubSerie(null, BigInteger.valueOf(-1), "NA", true, oseriena.getId(), null, null, null, null,
-						null, null, null);
+				osubseriena = new OSubSerie(null, BigInteger.valueOf(-1), "NA", true, oseriena.getId(), null, null,
+						null, null, null, null, null);
 				List<OSubSerie> listss = subSerieRepository.findAll(Example.of(osubseriena));
 				if (listss.isEmpty())
 					osubseriena = subSerieRepository.save(osubseriena);
@@ -692,8 +692,8 @@ public class VerificadorConstantesCdenciaRunner implements ApplicationRunner {
 			OTramite oparametro_999 = new OTramite(null, 8002, "8002", 547, "GRUPO DE GESTION DOCUMENTAL", true, 10,
 					true, null, proceso1, otipodocumentalTodos, tipoRadicacionEntrada, otipoExpA,
 					OSerie.builder().id(oserietodas.getId()).build(),
-					OSubSerie.builder().id(osubserietodas.getId()).seriePadre(oserietodas.getId()).build(), ocuadernoTodos,
-					otipoSegA);
+					OSubSerie.builder().id(osubserietodas.getId()).seriePadre(oserietodas.getId()).build(),
+					ocuadernoTodos, otipoSegA);
 			if (tramiteRelacionesRepository.findAll(Example.of(oparametro_999)).isEmpty()) {
 				oparametro_999 = tramiteRelacionesRepository.save(oparametro_999);
 			}
@@ -705,8 +705,8 @@ public class VerificadorConstantesCdenciaRunner implements ApplicationRunner {
 			OTramite oparametro_999 = new OTramite(null, 29001, "29001", 547, "GRUPO DE GESTION DOCUMENTAL", true, 10,
 					true, null, proceso1, otipodocumentalTodos, tipoRadicacionEntrada, otipoExpA,
 					OSerie.builder().id(oserietodas.getId()).build(),
-					OSubSerie.builder().id(osubserietodas.getId()).seriePadre(oserietodas.getId()).build(), ocuadernoTodos,
-					otipoSegA);
+					OSubSerie.builder().id(osubserietodas.getId()).seriePadre(oserietodas.getId()).build(),
+					ocuadernoTodos, otipoSegA);
 			if (tramiteRelacionesRepository.findAll(Example.of(oparametro_999)).isEmpty()) {
 				oparametro_999 = tramiteRelacionesRepository.save(oparametro_999);
 			}
@@ -718,9 +718,10 @@ public class VerificadorConstantesCdenciaRunner implements ApplicationRunner {
 			OTramite otramite_151001 = new OTramite(null, 151001,
 					"SOLICITUDES Y DISEÑOS DE FORMULARIOS OFICIALES PRESENTACIÓN INFORMACIÓN", 108,
 					"GRUPO DE INNOV, DESARROLLO Y ARQ. DE APLICACIONES", true, 10, true, null, proceso1,
-					otipodocumentalTodos, tipoRadicacionEntrada, otipoExpA, OSerie.builder().id(oserietodas.getId()).build(),
-					OSubSerie.builder().id(osubserietodas.getId()).seriePadre(oserietodas.getId()).build(), ocuadernoTodos,
-					otipoSegA);
+					otipodocumentalTodos, tipoRadicacionEntrada, otipoExpA,
+					OSerie.builder().id(oserietodas.getId()).build(),
+					OSubSerie.builder().id(osubserietodas.getId()).seriePadre(oserietodas.getId()).build(),
+					ocuadernoTodos, otipoSegA);
 			if (tramiteRelacionesRepository.findAll(Example.of(otramite_151001)).isEmpty()) {
 				otramite_151001 = tramiteRelacionesRepository.save(otramite_151001);
 			}
@@ -732,9 +733,10 @@ public class VerificadorConstantesCdenciaRunner implements ApplicationRunner {
 			OTramite otramite_151001 = new OTramite(null, 151001,
 					"SOLICITUDES Y DISEÑOS DE FORMULARIOS OFICIALES PRESENTACIÓN INFORMACIÓN", 108,
 					"GRUPO DE INNOV, DESARROLLO Y ARQ. DE APLICACIONES", true, 10, true, null, proceso1,
-					otipodocumentalTodos, tipoRadicacionInterna, otipoExpA, OSerie.builder().id(oserietodas.getId()).build(),
-					OSubSerie.builder().id(osubserietodas.getId()).seriePadre(oserietodas.getId()).build(), ocuadernoTodos,
-					otipoSegA);
+					otipodocumentalTodos, tipoRadicacionInterna, otipoExpA,
+					OSerie.builder().id(oserietodas.getId()).build(),
+					OSubSerie.builder().id(osubserietodas.getId()).seriePadre(oserietodas.getId()).build(),
+					ocuadernoTodos, otipoSegA);
 			if (tramiteRelacionesRepository.findAll(Example.of(otramite_151001)).isEmpty()) {
 				otramite_151001 = tramiteRelacionesRepository.save(otramite_151001);
 			}
@@ -746,9 +748,10 @@ public class VerificadorConstantesCdenciaRunner implements ApplicationRunner {
 			OTramite otramite_151001 = new OTramite(null, 151001,
 					"SOLICITUDES Y DISEÑOS DE FORMULARIOS OFICIALES PRESENTACIÓN INFORMACIÓN", 108,
 					"GRUPO DE INNOV, DESARROLLO Y ARQ. DE APLICACIONES", true, 10, true, null, proceso1,
-					otipodocumentalTodos, tipoRadicacionSalida, otipoExpA, OSerie.builder().id(oserietodas.getId()).build(),
-					OSubSerie.builder().id(osubserietodas.getId()).seriePadre(oserietodas.getId()).build(), ocuadernoTodos,
-					otipoSegA);
+					otipodocumentalTodos, tipoRadicacionSalida, otipoExpA,
+					OSerie.builder().id(oserietodas.getId()).build(),
+					OSubSerie.builder().id(osubserietodas.getId()).seriePadre(oserietodas.getId()).build(),
+					ocuadernoTodos, otipoSegA);
 			if (tramiteRelacionesRepository.findAll(Example.of(otramite_151001)).isEmpty()) {
 				otramite_151001 = tramiteRelacionesRepository.save(otramite_151001);
 			}
@@ -760,7 +763,8 @@ public class VerificadorConstantesCdenciaRunner implements ApplicationRunner {
 			OTramite otramite_180021 = new OTramite(null, 180021,
 					"SOLICITUDES Y DISEÑOS DE FORMULARIOS OFICIALES PRESENTACIÓN INFORMACIÓN", 108,
 					"GRUPO DE INNOV, DESARROLLO Y ARQ. DE APLICACIONES", true, 10, true, null, proceso1,
-					otipodocumentalTodos, tipoRadicacionEntrada, otipoExpA, OSerie.builder().id(oserietodas.getId()).build(),
+					otipodocumentalTodos, tipoRadicacionEntrada, otipoExpA,
+					OSerie.builder().id(oserietodas.getId()).build(),
 					OSubSerie.builder().id(osubserietodas.getId()).seriePadre(oserietodas.getId()).build(), ocuadernoNA,
 					otipoSegDep);
 			if (tramiteRelacionesRepository.findAll(Example.of(otramite_180021)).isEmpty()) {

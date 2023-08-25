@@ -21,5 +21,6 @@ import './commands'
 
 const baseUrl = 'https://8000-luisurbm-factura-2wsx40kg9ct.ws-us103.gitpod.io';
 const baseUrlSSOCDello = 'https://cpd-cp4badllo.apps.ssrhv-ops01.supersociedades.local/bawaut/ProcessPortal';
+const baseUrlSSOCPreConsultaMigrados = 'https://dev-servicios-dmz.supersociedades.gov.co:1443/ConsultaMigrados/';
 
-Cypress.config('baseUrl', baseUrlSSOCDello);
+Cypress.config('baseUrl', baseUrlSSOCPreConsultaMigrados);
