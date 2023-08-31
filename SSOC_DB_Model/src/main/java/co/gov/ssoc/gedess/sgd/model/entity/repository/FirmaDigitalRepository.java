@@ -33,4 +33,8 @@ public interface FirmaDigitalRepository extends JpaRepository<OFirmaDigital, Lon
 
 	@Query(value = "SELECT NEXT VALUE FOR [Administracion].[sqc_camerfirma_id_user]", nativeQuery = true)
 	BigInteger getSiguienteIdUser();
+
+	@Query(value = "SELECT CAST(current_value AS BIGINT) FROM sys.sequences WHERE name = 'sqc_camerfirma_id_user'", nativeQuery = true)
+	BigInteger getActualIdUser();
+
 }

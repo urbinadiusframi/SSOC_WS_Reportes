@@ -1,28 +1,5 @@
 package co.gov.ssoc.gedess.sgd.cfg.audit;
 
-//import static io.debezium.data.Envelope.FieldName.AFTER;
-//import static io.debezium.data.Envelope.FieldName.BEFORE;
-//import static io.debezium.data.Envelope.FieldName.OPERATION;
-import static java.util.stream.Collectors.toMap;
-
-import java.io.IOException;
-import java.util.Map;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
-
-import javax.annotation.PostConstruct;
-import javax.annotation.PreDestroy;
-
-import org.apache.commons.lang3.tuple.Pair;
-//import org.apache.kafka.connect.data.Field;
-//import org.apache.kafka.connect.data.Struct;
-//import org.apache.kafka.connect.source.SourceRecord;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.stereotype.Component;
-
 //import io.debezium.config.Configuration;
 //import io.debezium.data.Envelope.Operation;
 //import io.debezium.embedded.Connect;

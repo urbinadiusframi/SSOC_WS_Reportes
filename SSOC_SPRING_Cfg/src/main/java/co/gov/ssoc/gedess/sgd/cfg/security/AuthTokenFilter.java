@@ -1,8 +1,6 @@
 package co.gov.ssoc.gedess.sgd.cfg.security;
 
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.security.KeyStore;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -21,23 +19,17 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import co.gov.ssoc.gedess.sgd.cfg.Constantes;
+import co.gov.ssoc.gedess.sgd.cfg.audit.AuditRevisionListener;
 import co.gov.ssoc.gedess.sgd.cfg.security.service.AuthService;
 import co.gov.ssoc.gedess.sgd.cfg.security.service.impl.JwtUtils;
 import co.gov.ssoc.gedess.sgd.cfg.security.service.impl.UserDetailsServiceImpl;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 
 public class AuthTokenFilter extends OncePerRequestFilter {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(AuthTokenFilter.class);
 	private static final Logger LOGGER_RESPONSE = LoggerFactory.getLogger("response");
-
-	public static final String AUDIT_ORIGIN_IP_ADDRESS = "originIpAddress";
-	public static final String AUDIT_GUID_PROCESS = "guidProcess";
-	public static final String AUDIT_ENTIDAD = "AUDIT_ENTIDAD";
-	public static final String AUDIT_VALUE = "AUDIT_VALUE";
-	public static final String AUDIT_COMPONENT = "AUDIT_COMPONENT";
-	public static final String AUDIT_USER = "AUDIT_USER";
-	public static final String AUDIT_USER_ID = "AUDIT_USER_ID";
 
 	@Autowired
 	private JwtUtils jwtUtils;
@@ -52,6 +44,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
 	@Value("${sgd.admin.authentication.basic.password}")
 	private String password;
+
+	@Value("${application.name}")
+	private String applicationName;
 
 //	@Value("cdencia.jwt.keystore.keystoreType")
 //	private String keystoreType;
@@ -76,8 +71,9 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 
 		long start = System.currentTimeMillis();
 		try {
-			MDC.put(AUDIT_GUID_PROCESS, java.util.UUID.randomUUID().toString());
-			MDC.put(AUDIT_ORIGIN_IP_ADDRESS, request.getRemoteAddr());
+			MDC.put(AuditRevisionListener.AUDIT_GUID_PROCESS, java.util.UUID.randomUUID().toString());
+			MDC.put(AuditRevisionListener.AUDIT_ORIGIN_IP_ADDRESS, request.getRemoteAddr());
+			MDC.put(AuditRevisionListener.AUDIT_PROGRAM, applicationName);
 		} catch (Exception e) {
 			LOGGER.error("log-audit-vars", e);
 		}
@@ -89,11 +85,12 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 		try {
 			filterChain.doFilter(request, response);
 		} finally {
-			MDC.remove(AUDIT_GUID_PROCESS);
-			MDC.remove(AUDIT_ORIGIN_IP_ADDRESS);
-			MDC.remove(AUDIT_USER);
-			MDC.remove(AUDIT_USER_ID);
-			MDC.remove(AUDIT_COMPONENT);
+			MDC.remove(AuditRevisionListener.AUDIT_GUID_PROCESS);
+			MDC.remove(AuditRevisionListener.AUDIT_ORIGIN_IP_ADDRESS);
+			MDC.remove(AuditRevisionListener.AUDIT_USER);
+			MDC.remove(AuditRevisionListener.AUDIT_USER_ID);
+			MDC.remove(AuditRevisionListener.AUDIT_COMPONENT);
+			MDC.remove(AuditRevisionListener.AUDIT_PROGRAM);
 			LOGGER_RESPONSE.debug("[fin] {}ms", System.currentTimeMillis() - start);
 		}
 	}
@@ -104,26 +101,28 @@ public class AuthTokenFilter extends OncePerRequestFilter {
 			String jwt = headerAuth.substring(7, headerAuth.length());
 			if (jwt != null && jwtUtils.validateJwtToken(jwt)) {
 				String username = jwtUtils.getUserNameFromJwtToken(jwt);
+				Jws<Claims> jws = jwtUtils.parseClaimsJws(jwt);
+				Claims claims = jws.getBody();
+				String appName = claims.get(AuditRevisionListener.AUDIT_COMPONENT, String.class);
+				MDC.put(AuditRevisionListener.AUDIT_APLICATION, appName);
 				UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
 						userDetails, null, userDetails.getAuthorities());
 				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
 				SecurityContextHolder.getContext().setAuthentication(authentication);
-				MDC.put(AUDIT_COMPONENT, request.getHeader(AUDIT_COMPONENT));
-				MDC.put(AUDIT_USER, username);
-				MDC.put(AUDIT_USER_ID, username);
+				MDC.put(AuditRevisionListener.AUDIT_USER, username);
+				MDC.put(AuditRevisionListener.AUDIT_USER_ID, username);
 			}
-		} else if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Basic ")) {
-			if (authService.validateBasicAuthentication(userName, password, headerAuth)) {
-				UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
-				UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-						userDetails, null, userDetails.getAuthorities());
-				authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-				SecurityContextHolder.getContext().setAuthentication(authentication);
-				MDC.put(AUDIT_COMPONENT, request.getHeader(AUDIT_COMPONENT));
-				MDC.put(AUDIT_USER, userName);
-				MDC.put(AUDIT_USER_ID, userName);
-			}
+		} else if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Basic ")
+				&& authService.validateBasicAuthentication(userName, password, headerAuth)) {
+			UserDetails userDetails = userDetailsService.loadUserByUsername(userName);
+			UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails,
+					null, userDetails.getAuthorities());
+			authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+			SecurityContextHolder.getContext().setAuthentication(authentication);
+			MDC.put(AuditRevisionListener.AUDIT_APLICATION, applicationName);
+			MDC.put(AuditRevisionListener.AUDIT_USER, userName);
+			MDC.put(AuditRevisionListener.AUDIT_USER_ID, userName);
 		}
 	}
 

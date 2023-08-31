@@ -6,28 +6,24 @@ import java.text.SimpleDateFormat;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.slf4j.MDC;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import co.gov.ssoc.gedess.sgd.cfg.Constantes;
 import co.gov.ssoc.gedess.sgd.cfg.audit.AuditRevisionListener;
 import co.gov.ssoc.gedess.sgd.cfg.audit.dto.AuditoriaDTO;
 import co.gov.ssoc.gedess.sgd.cfg.audit.dto.AuditoriaDTO.AuditoriaDTOBuilder;
-import co.gov.ssoc.gedess.sgd.cfg.security.AuthTokenFilter;
 
 @Service
 public class AuditRevisionListenerImpl implements AuditRevisionListener {
 
-	@Autowired
-	private KafkaTemplate<String, String> kafkaTemplate;
+//	@Autowired
+//	private KafkaTemplate<String, String> kafkaTemplate;
 	@Autowired
 	private RabbitTemplate template;
 	@Autowired
@@ -69,10 +65,10 @@ public class AuditRevisionListenerImpl implements AuditRevisionListener {
 		AuditoriaDTO input = (AuditoriaDTO) message;
 		AuditoriaDTOBuilder auditBuilder = AuditoriaDTO.builder();
 		try {
-			auditBuilder.aplicacion(apiName).componente(input.getComponente()).usuario(input.getUsuario())
-					.usuarioId(input.getUsuarioId()).maquina(input.getMaquina()).contenido(input.getContenido())
-					.entidad(input.getEntidad()).fecha(input.getFecha()).identificador(input.getIdentificador())
-					.tipo(input.getTipo()).build();
+			auditBuilder.programa(apiName).aplicacion(input.getAplicacion()).componente(input.getComponente())
+					.usuario(input.getUsuario()).usuarioId(input.getUsuarioId()).maquina(input.getMaquina())
+					.contenido(input.getContenido()).entidad(input.getEntidad()).fecha(input.getFecha())
+					.identificador(input.getIdentificador()).tipo(input.getTipo()).build();
 		} catch (Exception e) {
 			LOGGER.error("build", e);
 		}

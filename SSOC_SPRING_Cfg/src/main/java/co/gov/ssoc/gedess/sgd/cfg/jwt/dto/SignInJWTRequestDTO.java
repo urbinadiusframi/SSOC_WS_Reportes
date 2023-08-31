@@ -25,7 +25,7 @@ public class SignInJWTRequestDTO implements Serializable {
 	private String password;
 
 	@NotBlank
-	@ApiModelProperty(notes = "componente que usará el token", required = true)
+	@ApiModelProperty(notes = "aplicación que usará el token", required = true)
 	private String component;
 
 }

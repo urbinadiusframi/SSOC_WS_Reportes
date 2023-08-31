@@ -41,10 +41,11 @@ public class HibernateAuditListener implements PostLoadEventListener, PostUpdate
 
 	public void sendMessage(Object message, EAuditType type) {
 		try {
-			String comp = MDC.get(AuthTokenFilter.AUDIT_COMPONENT);
-			String usuario = MDC.get(AuthTokenFilter.AUDIT_USER);
-			String usuarioid = MDC.get(AuthTokenFilter.AUDIT_USER_ID);
-			String ipAddress = MDC.get(AuthTokenFilter.AUDIT_ORIGIN_IP_ADDRESS);
+			String app = MDC.get(AuditRevisionListener.AUDIT_APLICATION);
+			String comp = MDC.get(AuditRevisionListener.AUDIT_COMPONENT);
+			String usuario = MDC.get(AuditRevisionListener.AUDIT_USER);
+			String usuarioid = MDC.get(AuditRevisionListener.AUDIT_USER_ID);
+			String ipAddress = MDC.get(AuditRevisionListener.AUDIT_ORIGIN_IP_ADDRESS);
 
 			Class<?> clazz = message.getClass();
 			Field[] fields = clazz.getDeclaredFields();
@@ -60,8 +61,8 @@ public class HibernateAuditListener implements PostLoadEventListener, PostUpdate
 			}
 
 			ApplicationContextProvider.getApplicationContext().getBean(AuditRevisionListener.class)
-					.newRevision(AuditoriaDTO.builder().componente(comp).usuario(usuario).usuarioId(toLong(usuarioid))
-							.maquina(ipAddress).entidad(clazz.getCanonicalName())
+					.newRevision(AuditoriaDTO.builder().aplicacion(app).componente(comp).usuario(usuario)
+							.usuarioId(toLong(usuarioid)).maquina(ipAddress).entidad(clazz.getCanonicalName())
 							.contenido(ApplicationContextProvider.getApplicationContext().getBean(ObjectMapper.class)
 									.writeValueAsString(message))
 							.identificador(identificador).tipo(type).fecha(new Date()).build());

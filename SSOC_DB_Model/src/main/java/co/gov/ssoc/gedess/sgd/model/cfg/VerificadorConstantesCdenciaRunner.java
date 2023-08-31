@@ -69,7 +69,7 @@ public class VerificadorConstantesCdenciaRunner implements ApplicationRunner {
 	public void run(ApplicationArguments args) throws Exception {
 		long start = System.currentTimeMillis();
 		LOGGER.debug("constantsVerifier-run init");
-
+		
 		// ESTADO RADICACION
 		try {
 			OEstadoRadicacion oEstadoRadicacion = new OEstadoRadicacion(null, "1", "Radicado", true);

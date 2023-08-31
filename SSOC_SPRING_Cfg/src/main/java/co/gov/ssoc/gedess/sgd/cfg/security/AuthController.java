@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import co.gov.ssoc.gedess.sgd.cfg.audit.AuditRevisionListener;
 import co.gov.ssoc.gedess.sgd.cfg.jwt.dto.JwtResponse;
 import co.gov.ssoc.gedess.sgd.cfg.jwt.dto.LoginJWTRequestDTO;
 import co.gov.ssoc.gedess.sgd.cfg.jwt.dto.MessageResponse;
@@ -81,7 +82,7 @@ public class AuthController {
 			Map<String, Object> claims = new HashMap<>();
 			String remoteAddr = this.getIp(httpRequest);
 			claims.put("host", remoteAddr);
-			claims.put("component", loginRequest.getComponent());
+			claims.put(AuditRevisionListener.AUDIT_APLICATION, loginRequest.getComponent());
 
 			JwtResponse JwtResponse = jwtUtils.generateJwtToken(authentication, claims);
 
