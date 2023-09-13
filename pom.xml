@@ -8,19 +8,19 @@
 	<packaging>pom</packaging>
 	<version>1.0.0</version>
 	<modules>
-<!--		<module>spring-dacartec-admin-server</module>-->
-<!--		<module>spring-dacartec-customers-service</module>-->
-<!--		<module>spring-dacartec-vets-service</module>-->
-<!--		<module>SSOC_SPRING_Tests</module>-->
+		<!--		<module>spring-dacartec-admin-server</module>-->
+		<!--		<module>spring-dacartec-customers-service</module>-->
+		<!--		<module>spring-dacartec-vets-service</module>-->
+		<!--		<module>SSOC_SPRING_Tests</module>-->
 		<module>SSOC_SPRING_Cfg</module>
 		<module>SSOC_DB_Model</module>
-		<module>SSOC_WS_Integraciones</module>
+		 <module>SSOC_WS_Integraciones</module> 
 <!--		<module>SSOC_OPE_Administracion_Tramites</module>-->
-<!--		<module>SSOC_WS_Auditoria</module>-->
+<!--				<module>SSOC_WS_Auditoria</module>-->
 <!--		<module>SSOC_WS_Administracion_Instrumentos_Archivisticos</module>-->
-<!--		<module>spring-dacartec-config-server</module>-->
-<!--		<module>spring-dacartec-discovery-server</module>-->
-<!--		<module>spring-dacartec-api-gateway</module>-->
+		<!--		<module>spring-dacartec-config-server</module>-->
+		<!--		<module>spring-dacartec-discovery-server</module>-->
+		<!--		<module>spring-dacartec-api-gateway</module>-->
 	</modules>
 	<properties>
 		<java.version>1.8</java.version>
@@ -84,6 +84,11 @@
 			</activation>
 			<build>
 				<plugins>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-resources-plugin</artifactId>
+						<version>3.1.0</version>
+					</plugin>
 					<plugin>
 						<groupId>org.springframework.boot</groupId>
 						<artifactId>spring-boot-maven-plugin</artifactId>

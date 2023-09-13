@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.jpa.repository.query.Procedure;
@@ -22,7 +23,7 @@ import co.gov.ssoc.gedess.sgd.model.entity.OTipoSeguridad;
 import co.gov.ssoc.gedess.sgd.model.entity.OTramite;
 
 @Repository
-public interface RadicacionRepository extends JpaRepository<ORadicacion, Long>
+public interface RadicacionRepository extends JpaRepository<ORadicacion, Long>, JpaSpecificationExecutor<ORadicacion>
 //		,org.springframework.data.repository.history.RevisionRepository<ORadicacion, Long, Long>
 {
 

@@ -84,8 +84,8 @@ public class PersistenceJNDIConfig {
 		Properties properties = new Properties();
 
 //		properties.put("hibernate.id.new_generator_mappings", env.getProperty("jdbc.jpa.hibernate.use-new-id-generator-mappings")); activar en dev y prod
-		properties.put("hibernate.show_sql", false);
-		properties.put("hibernate.format_sql", false);
+		properties.put("hibernate.show_sql", true);
+		properties.put("hibernate.format_sql", true);
 		properties.put("hibernate.generate_statistics", false);
 		properties.put("hibernate.ejb.event.post-insert", CO_GOV_SSOC_GEDESS_SGD_CFG_AUDIT_HIBERNATE_AUDIT_LISTENER);
 		properties.put("hibernate.ejb.event.post-delete", CO_GOV_SSOC_GEDESS_SGD_CFG_AUDIT_HIBERNATE_AUDIT_LISTENER);
